@@ -42,11 +42,11 @@ public class Game {
             }
 
 
+            if (board.isBoardFull()) {
+                System.out.println("REMIS!");
+            }
         }
 
-        if (board.isBoardFull()) {
-            System.out.println("REMIS!");
-        }
     }
 
     public void switchPlayer() {
