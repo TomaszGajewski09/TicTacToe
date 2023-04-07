@@ -1,36 +1,86 @@
 package com.kodilla.tictactoe;
 
+import java.security.InvalidParameterException;
 import java.util.Scanner;
 
 public class Game {
-    static Board board = new Board();
-
-    public static void main(String[] args) {
-        readPosition();
+    private Board board;
+    private char currentPlayer;
+    public Game() {
+        board = new Board();
+        currentPlayer = 'X';
     }
 
-//    private static void startGame() {}
-
-    private static void readPosition() {
-        Scanner scanner = new Scanner(System.in);
-        board.writeBoard();
-
-        int round=0;
-        while (round < 9) {
-            System.out.println("Podaj numer wiersza (1-3): ");
-            int row = scanner.nextInt() - 1;
-            System.out.println("Podaj numer kolumny (1-3)");
-            int col = scanner.nextInt() - 1;
 
 
-            if (board.setOnPosition(row, col, round)) {
+
+    void startGame() {
+
+        board.printBoard();
+
+        while (!board.isBoardFull()) {
+
+            int[] position;
+            try {
+                position = readPositionFromUser();
+            } catch (InvalidPositionParametersException e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            try {
+                board.setOnPosition(position[0], position[1], currentPlayer);
                 if (board.checkBoard()) {
+                    System.out.println("WYGRAL " + currentPlayer + "!");
                     break;
                 } else {
-                    round++;
-                    board.writeBoard();
+                    switchPlayer();
+                    board.printBoard();
                 }
+            } catch (FieldAlreadyTakenException e) {
+                System.out.println("\n * " + e.getMessage() + " Ponow probe! *");
             }
+
+
+        }
+
+        if (board.isBoardFull()) {
+            System.out.println("REMIS!");
         }
     }
+
+    public void switchPlayer() {
+        if (currentPlayer == 'X') {
+            currentPlayer = 'O';
+        } else {
+            currentPlayer = 'X';
+        }
+    }
+
+    private int[] readPositionFromUser() throws InvalidPositionParametersException {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Gracz " +currentPlayer +". Podaj litere kolumny i numer wiersza (np. A1): ");
+        String position = scanner.nextLine();
+        int col = position.charAt(0);
+        int row = position.charAt(1);
+
+        if(col >= 'A' && col <= 'C') {
+            col -= 'A';
+        } else if (col >= 'a' && col <= 'c') {
+            col -= 'a';
+        } else {
+            throw new InvalidPositionParametersException("Niepoprawna kolumna\n");
+        }
+
+        if (row >= '1' && row <= '3') {
+            row -= '1';
+        } else {
+            throw new InvalidPositionParametersException("Niepoprawny wiersz\n");
+        }
+
+        return new int[]{col, row};
+    }
+
+
 }
