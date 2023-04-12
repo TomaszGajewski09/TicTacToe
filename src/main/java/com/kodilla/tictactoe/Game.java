@@ -1,25 +1,64 @@
 package com.kodilla.tictactoe;
 
-import java.security.InvalidParameterException;
 import java.util.*;
 
 public class Game {
+    UserMenu userMenu;
     private Board board;
     private char currentPlayer;
     public Game() {
-        board = new Board();
+        userMenu = new UserMenu();
+        if (userMenu.isBasicBoard()) {
+            board = new BasicBoard();
+        } else {
+            board = new ExtendedBoard();
+        }
+
         currentPlayer = 'X';
     }
 
 
 
 
+//    void startGame() {
+//
+//        board.printBoard();
+//
+//        while (!board.isBoardFull()) {
+//
+//            int[] position;
+//            try {
+//                position = readPositionFromUser();
+//            } catch (InvalidPositionParametersException e) {
+//                System.out.println(e.getMessage());
+//                continue;
+//            }
+//
+//            try {
+//                board.setOnPosition(position[0], position[1], currentPlayer);
+//                if (board.checkBoard()) {
+//                    System.out.println("WYGRAL " + currentPlayer + "!");
+//                    break;
+//                } else {
+//                    switchPlayer();
+//                    board.printBoard();
+//                }
+//            } catch (FieldAlreadyTakenException e) {
+//                System.out.println("\n * " + e.getMessage() + " Ponow probe! *");
+//            }
+//
+//
+//            if (board.isBoardFull()) {
+//                System.out.println("REMIS!");
+//            }
+//        }
+//
+//    }
+
     void startGame() {
-
         board.printBoard();
 
         while (!board.isBoardFull()) {
-
             int[] position;
             try {
                 position = readPositionFromUser();
@@ -30,43 +69,9 @@ public class Game {
 
             try {
                 board.setOnPosition(position[0], position[1], currentPlayer);
-                if (board.checkBoard()) {
-                    System.out.println("WYGRAL " + currentPlayer + "!");
-                    break;
-                } else {
-                    switchPlayer();
-                    board.printBoard();
-                }
             } catch (FieldAlreadyTakenException e) {
                 System.out.println("\n * " + e.getMessage() + " Ponow probe! *");
-            }
-
-
-            if (board.isBoardFull()) {
-                System.out.println("REMIS!");
-            }
-        }
-
-    }
-
-    void startGameWithAI() {
-        board.printBoard();
-
-        while (!board.isBoardFull()) {
-
-            int[] position;
-            try {
-                position = readPositionFromUser();
-            } catch (InvalidPositionParametersException e) {
-                System.out.println(e.getMessage());
                 continue;
-            }
-
-            try {
-                board.setOnPosition(position[0], position[1], currentPlayer);
-
-            } catch (FieldAlreadyTakenException e) {
-                System.out.println("\n * " + e.getMessage() + " Ponow probe! *");
             }
 
             if (board.checkBoard()) {
@@ -74,14 +79,15 @@ public class Game {
                 break;
             } else {
                 switchPlayer();
-                moveAI(currentPlayer);
-                if (board.checkBoard()) {
-                    System.out.println("WYGRAL " + currentPlayer + "!");
-                    break;
+                if(userMenu.isVersusComputer()) {
+                    computerMove(currentPlayer);
+                    if (board.checkBoard()) {
+                        System.out.println("WYGRAL " + currentPlayer + "!");
+                        break;
+                    }
+                    switchPlayer();
                 }
-                switchPlayer();
             }
-
 
             if (board.isBoardFull()) {
                 System.out.println("REMIS!");
@@ -89,7 +95,7 @@ public class Game {
         }
     }
 
-    private void moveAI(char symbol) {
+    private void computerMove(char symbol) {
 
         Random random = new Random();
 
@@ -118,19 +124,35 @@ public class Game {
 
         System.out.println("Gracz " +currentPlayer +". Podaj litere kolumny i numer wiersza (np. A1): ");
         String position = scanner.nextLine();
-        int col = position.charAt(0);
-        int row = position.charAt(1);
+        System.out.println(position.length());
 
-        if(col >= 'A' && col <= 'C') {
+        // sprawdzenie poprawności długości pozycji
+        int expectedLength = (userMenu.isBasicBoard())? 2 : 3;
+        System.out.println(expectedLength);
+        if (position.length() < 2 || position.length() > expectedLength) {
+            throw new InvalidPositionParametersException("Niepoprawna dana - dlugosc.");
+        }
+        // sprawdzenie poprawności znaków pozycji
+        if (!position.matches("^[A-Za-z0-9]+$")) {
+            throw new InvalidPositionParametersException("Niepoprawna dana.");
+        }
+
+
+        int col = position.toUpperCase().charAt(0);
+        int row = Integer.parseInt(position.substring(1));
+
+        char maxColUppercase = (userMenu.isBasicBoard())? 'C': 'J';
+        int maxRow = (userMenu.isBasicBoard())? 3 : 10;
+
+
+        if (col >= 'A' && col <= maxColUppercase) {
             col -= 'A';
-        } else if (col >= 'a' && col <= 'c') {
-            col -= 'a';
         } else {
             throw new InvalidPositionParametersException("Niepoprawna kolumna\n");
         }
 
-        if (row >= '1' && row <= '3') {
-            row -= '1';
+        if (row >= 1 && row <= maxRow) {
+            row -= 1;
         } else {
             throw new InvalidPositionParametersException("Niepoprawny wiersz\n");
         }
