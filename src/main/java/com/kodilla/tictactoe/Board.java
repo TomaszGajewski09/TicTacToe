@@ -1,5 +1,8 @@
 package com.kodilla.tictactoe;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Board {
 
     char[][] board = {
@@ -7,8 +10,9 @@ public class Board {
             {' ', ' ', ' '},
             {' ', ' ', ' '}
     };
-    public Board() {
 
+    public char[][] getBoard() {
+        return board;
     }
 
     public void printBoard() {
@@ -26,6 +30,7 @@ public class Board {
 
         if (board[row][col] == ' ') {
             board[row][col] = symbol;
+            printBoard();
         } else {
             throw new FieldAlreadyTakenException("To miejsce jest juz zajete.");
         }
@@ -68,6 +73,18 @@ public class Board {
         return result;
     }
 
+
+    public List<int[]> getEmptyPositions() {
+        List<int[]> emptyPositions = new ArrayList<>();
+        for (int row = 0; row < board.length; row++) {
+            for (int col = 0; col < board[row].length; col++) {
+                if (board[row][col] == ' ') {
+                    emptyPositions.add(new int[] {col, row});
+                }
+            }
+        }
+        return emptyPositions;
+    }
 
 
 }

@@ -1,7 +1,7 @@
 package com.kodilla.tictactoe;
 
 import java.security.InvalidParameterException;
-import java.util.Scanner;
+import java.util.*;
 
 public class Game {
     private Board board;
@@ -48,6 +48,62 @@ public class Game {
         }
 
     }
+
+    void startGameWithAI() {
+        board.printBoard();
+
+        while (!board.isBoardFull()) {
+
+            int[] position;
+            try {
+                position = readPositionFromUser();
+            } catch (InvalidPositionParametersException e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            try {
+                board.setOnPosition(position[0], position[1], currentPlayer);
+
+            } catch (FieldAlreadyTakenException e) {
+                System.out.println("\n * " + e.getMessage() + " Ponow probe! *");
+            }
+
+            if (board.checkBoard()) {
+                System.out.println("WYGRAL " + currentPlayer + "!");
+                break;
+            } else {
+                switchPlayer();
+                moveAI(currentPlayer);
+                if (board.checkBoard()) {
+                    System.out.println("WYGRAL " + currentPlayer + "!");
+                    break;
+                }
+                switchPlayer();
+            }
+
+
+            if (board.isBoardFull()) {
+                System.out.println("REMIS!");
+            }
+        }
+    }
+
+    private void moveAI(char symbol) {
+
+        Random random = new Random();
+
+        List<int[]> freeSlots = board.getEmptyPositions();
+        int randIndex = random.nextInt(freeSlots.size());
+        int[] position = freeSlots.get(randIndex);
+        try {
+            board.setOnPosition(position[0], position[1], symbol);
+        } catch (FieldAlreadyTakenException ignored) {
+        }
+
+    }
+
+
 
     public void switchPlayer() {
         if (currentPlayer == 'X') {
