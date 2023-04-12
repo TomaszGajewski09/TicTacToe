@@ -20,41 +20,6 @@ public class Game {
 
 
 
-//    void startGame() {
-//
-//        board.printBoard();
-//
-//        while (!board.isBoardFull()) {
-//
-//            int[] position;
-//            try {
-//                position = readPositionFromUser();
-//            } catch (InvalidPositionParametersException e) {
-//                System.out.println(e.getMessage());
-//                continue;
-//            }
-//
-//            try {
-//                board.setOnPosition(position[0], position[1], currentPlayer);
-//                if (board.checkBoard()) {
-//                    System.out.println("WYGRAL " + currentPlayer + "!");
-//                    break;
-//                } else {
-//                    switchPlayer();
-//                    board.printBoard();
-//                }
-//            } catch (FieldAlreadyTakenException e) {
-//                System.out.println("\n * " + e.getMessage() + " Ponow probe! *");
-//            }
-//
-//
-//            if (board.isBoardFull()) {
-//                System.out.println("REMIS!");
-//            }
-//        }
-//
-//    }
-
     void startGame() {
         board.printBoard();
 
@@ -126,13 +91,13 @@ public class Game {
         String position = scanner.nextLine();
         System.out.println(position.length());
 
-        // sprawdzenie poprawności długości pozycji
+        // Data length check
         int expectedLength = (userMenu.isBasicBoard())? 2 : 3;
         System.out.println(expectedLength);
         if (position.length() < 2 || position.length() > expectedLength) {
-            throw new InvalidPositionParametersException("Niepoprawna dana - dlugosc.");
+            throw new InvalidPositionParametersException("Niepoprawna dana.");
         }
-        // sprawdzenie poprawności znaków pozycji
+        // validation of characters
         if (!position.matches("^[A-Za-z0-9]+$")) {
             throw new InvalidPositionParametersException("Niepoprawna dana.");
         }
@@ -144,13 +109,14 @@ public class Game {
         char maxColUppercase = (userMenu.isBasicBoard())? 'C': 'J';
         int maxRow = (userMenu.isBasicBoard())? 3 : 10;
 
-
+        // Column range check
         if (col >= 'A' && col <= maxColUppercase) {
             col -= 'A';
         } else {
             throw new InvalidPositionParametersException("Niepoprawna kolumna\n");
         }
 
+        // Rows range check
         if (row >= 1 && row <= maxRow) {
             row -= 1;
         } else {

@@ -48,8 +48,6 @@ public class ExtendedBoard implements Board {
 
     @Override
     public boolean checkBoard() {
-//        boolean check = false;
-
         for (int i = 0; i < board.length; i++) {
             // Check rows
             for (int col = 0; col < board.length - 4; col++) {
@@ -74,24 +72,24 @@ public class ExtendedBoard implements Board {
         }
 
         // Check diagonal lines
-        for (int row = 0; row < board.length - 4; row++) {
+        for (int row = 0; row < board.length - 5; row++) {
 
             for (int col = 0; col < board.length - 4; col++) {
-                if (board[row][col] == board[row+1][col+1] &&
-                        board[row+1][col+1] == board[row+2][col+2] &&
-                        board[row+2][col+2] == board[row+3][col+3] &&
-                        board[row+3][col+3] == board[row+4][col+4] &&
-                        board[row+4][col+4] != ' ') {
+                if (board[row][col] == board[row + 1][col + 1] &&
+                        board[row + 1][col + 1] == board[row + 2][col + 2] &&
+                        board[row + 2][col + 2] == board[row + 3][col + 3] &&
+                        board[row + 3][col + 3] == board[row + 4][col + 4] &&
+                        board[row + 4][col + 4] != ' ') {
                     return true;
                 }
             }
 
-            for (int col = board.length - 4; col >=4 ; col--) {
-                if (board[row][col] == board[row+1][col+1] &&
-                        board[row+1][col-1] == board[row+2][col-2] &&
-                        board[row+2][col-2] == board[row+3][col-3] &&
-                        board[row+3][col-3] == board[row+4][col-4] &&
-                        board[row+4][col-4] != ' ') {
+            for (int col = board.length - 1; col >= 4; col--) {
+                if (board[row][col] == board[row + 1][col - 1] &&
+                        board[row + 1][col - 1] == board[row + 2][col - 2] &&
+                        board[row + 2][col - 2] == board[row + 3][col - 3] &&
+                        board[row + 3][col - 3] == board[row + 4][col - 4] &&
+                        board[row + 4][col - 4] != ' ') {
                     return true;
                 }
             }
@@ -104,8 +102,6 @@ public class ExtendedBoard implements Board {
 
     @Override
     public boolean isBoardFull() {
-//        boolean result = true;
-
         for (char[] row : board) {
             for (char element : row) {
                 if (element == ' ') return false;
